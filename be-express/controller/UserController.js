@@ -25,7 +25,47 @@ module.exports = {
                     err.message || "Some error occurred while creating the Tutorial."
             });
         });
-    }
+    },
+
+    update(req, res) {
+        const id = req.params.id;
+        return db.User.update(req.body, { where: { id: id } }).then((result) => {
+            console.log(result)
+            if (result == 1) {
+                res.send({
+                    message: "updated successfully."
+                });
+            } else {
+                res.send({
+                    message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!`
+                });
+            }
+        }).catch((err) => {
+            res.status(500).send({
+                message: "Error updating with id=" + id
+            });
+        });
+    },
+
+    delete(req, res) {
+        const id = req.body.id;
+        console.log(id)
+        return db.User.destroy({ where: { id: id } }).then((result) => {
+            if (result == 1) {
+                res.send({
+                    message: " deleted successfully!"
+                });
+            } else {
+                res.send({
+                    message: `Cannot delete with id=${id}. Maybe users was not found!`
+                });
+            }
+        }).catch((err) => {
+            res.status(500).send({
+                message: "Could not delete  with id=" + id + " error: " + err
+            });
+        });
+    },
 
 
 }
