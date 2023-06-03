@@ -1,9 +1,9 @@
 const db = require('../models');
-
+const { QueryTypes } = require('sequelize');
 
 module.exports = {
     async getAll(req, res) {
-        return await db.User.findAll().then((result) => {
+        return await db.Users.findAll().then((result) => {
             res.status(200).send(result)
         }).catch((err) => {
             res.status(500).send('error server: ' + err);
@@ -17,7 +17,7 @@ module.exports = {
             contact_lastname: req.body.contact_lastname,
             contact_email: req.body.contact_email
         }
-        return await db.User.create(data).then((result) => {
+        return await db.Users.create(data).then((result) => {
             res.status(200).send(result)
         }).catch((err) => {
             res.status(500).send({
@@ -29,7 +29,7 @@ module.exports = {
 
     update(req, res) {
         const id = req.params.id;
-        return db.User.update(req.body, { where: { id: id } }).then((result) => {
+        return db.Users.update(req.body, { where: { id: id } }).then((result) => {
             console.log(result)
             if (result == 1) {
                 res.send({
@@ -49,8 +49,8 @@ module.exports = {
 
     delete(req, res) {
         const id = req.body.id;
-        console.log(id)
-        return db.User.destroy({ where: { id: id } }).then((result) => {
+        console.log(id);
+        return db.Users.destroy({ where: { id: id } }).then((result) => {
             if (result == 1) {
                 res.send({
                     message: " deleted successfully!"
@@ -66,6 +66,23 @@ module.exports = {
             });
         });
     },
+
+    async getById(req, res) {
+        const id = req.params.id;
+        console.log("id ban lay dc la:" + id);
+        return await db.sequelize.query('SELECT * FROM "Users" WHERE id = ?',
+          {
+            replacements: [id],
+            type: QueryTypes.SELECT
+          }).then((result) => {
+            const firstElement = result[0];
+            res.send(firstElement);
+          }).catch((err) => {
+            res.status(500).send({
+              message: "error server" + err
+            });
+          });
+      }
 
 
 }

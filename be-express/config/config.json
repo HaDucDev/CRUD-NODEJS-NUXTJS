@@ -4,7 +4,8 @@
     "password": "123456",
     "database": "datatest",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "port": 5432
   },
   "test": {
     "username": "root",
