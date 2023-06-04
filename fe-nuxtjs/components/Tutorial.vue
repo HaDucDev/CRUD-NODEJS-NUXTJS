@@ -4,7 +4,7 @@
       <b-button
         variant="outline-primary"
         v-bind:disabled="showButton"
-        @click="$bvModal.show('bv-modal-example')"
+        @click="createModal"
         >Create</b-button
       >
       <b-table striped hover :items="items" :fields="fields">
@@ -208,7 +208,14 @@ export default {
           alert(e);
         });
     },
-    },
+    createModal(){
+      this.$refs['bv-modal'].show();
+      this.form.company_name = '';
+      this.form.contact_firstname = '';
+      this.form.contact_lastname = '';
+      this.form.contact_email = '';
+    }
+  },
     
 };
 </script>
