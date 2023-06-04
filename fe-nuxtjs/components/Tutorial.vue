@@ -30,6 +30,18 @@
       <b-modal id="bv-modal-example" hide-footer ref="bv-modal">
         <template #modal-title> Using <code>$bvModal</code> Methods </template>
         <b-form @submit="onSubmit" @reset="onReset">
+          <b-form-group v-if="showId"
+            id="input-group-0"
+            label="id:"
+            label-for="input-0"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="form.id"
+              placeholder="Enter id"
+              readonly
+            ></b-form-input>
+          </b-form-group>
           <b-form-group
             id="input-group-1"
             label="company name:"
@@ -80,7 +92,8 @@
               required
             ></b-form-input>
           </b-form-group>
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="submit" variant="primary" v-if="showAdd">Submit</b-button>
+          <b-button @click="updateCustomer" variant="primary" v-if="showEdit">Submit</b-button>
           <b-button type="reset" variant="danger">Reset</b-button>
         </b-form>
       </b-modal>
@@ -96,6 +109,11 @@ export default {
   data() {
     return {
       fields: [
+        {
+          key: "id",
+          label: "id",
+          sortable: false,
+        },
         {
           key: "company_name",
           label: "Company Name",
@@ -129,6 +147,9 @@ export default {
           contact_lastname:'',
           contact_email:''
         },
+      showId: false,
+      showAdd: false,
+      showEdit: false
     };
   },
   mounted() {
@@ -193,12 +214,16 @@ export default {
             });
           },
       editCustomer(item){
+        this.showAdd = false;
+        this.showEdit = true;
         this.$refs['bv-modal'].show();
         axios
         .get(`http://localhost:8080/users/${item.id}`)
         .then((response) => {
           console.log(response)
           let data = response.data;
+          this.showId=true;
+          this.form.id = data.id;
           this.form.company_name = data.company_name;
           this.form.contact_firstname = data.contact_firstname;
           this.form.contact_lastname = data.contact_lastname;
@@ -210,10 +235,25 @@ export default {
     },
     createModal(){
       this.$refs['bv-modal'].show();
+      this.showId=false;
+      this.showEdit= false;
+      this.showAdd=true;
       this.form.company_name = '';
       this.form.contact_firstname = '';
       this.form.contact_lastname = '';
       this.form.contact_email = '';
+    },
+    updateCustomer(){
+      
+      axios
+        .put(`http://localhost:8080/users/${this.form.id}`,this.form)
+        .then((response) => {
+            this.$refs['bv-modal'].hide();
+            this.getAllCustomer();
+        })
+        .catch((e) => {
+          alert(e);
+        });
     }
   },
     

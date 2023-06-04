@@ -3,7 +3,9 @@ const { QueryTypes } = require('sequelize');
 
 module.exports = {
     async getAll(req, res) {
-        return await db.Users.findAll().then((result) => {
+        return await db.Users.findAll({order: [
+            ['id', 'ASC'],
+        ]}).then((result) => {
             res.status(200).send(result)
         }).catch((err) => {
             res.status(500).send('error server: ' + err);
