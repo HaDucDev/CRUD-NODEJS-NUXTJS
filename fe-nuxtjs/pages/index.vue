@@ -1,9 +1,15 @@
 <template>
-  <Tutorial/>
+ <Tutorial/>
 </template>
 
 <script>
+
+import Tutorial from '../components/Tutorial'
+
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  components:{
+    Tutorial
+  }
 }
 </script>
